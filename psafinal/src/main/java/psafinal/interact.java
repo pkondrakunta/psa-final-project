@@ -63,7 +63,7 @@ public class interact {
 	      Actions act=new Actions(driver);
 	      String word="prize";
 	      
-	      for(int outerdiv=1;outerdiv<=2;outerdiv++) {
+	      for(int outerdiv=1;outerdiv<=ATTEMPTS;outerdiv++) {
 	    	  
 	      for(int innerdiv=1;innerdiv<=WORD_LENGTH;innerdiv++) {
 	    	  web=driver.findElement(By.xpath("/html/body/div/div/div[2]/div/div[1]/div/div["+outerdiv+"]/div["+innerdiv+"]/div"));
@@ -93,13 +93,15 @@ public class interact {
 	    			  if(checkanyotherword!=innerdiv) {
 	    				  if(word.charAt(checkanyotherword-1)==word.charAt(innerdiv-1)) {
 	    					  WebElement checkduplicate=driver.findElement(By.xpath("/html/body/div/div/div[2]/div/div[1]/div/div["+outerdiv+"]/div["+checkanyotherword+"]/div"));
-	    					  System.out.println("checkduplicate"+word.charAt(checkanyotherword-1));
+	    					  //System.out.println("checkduplicate"+word.charAt(checkanyotherword-1));
 	    					  String checkduplicatetxt=checkduplicate.getAttribute("outerHTML".valueOf("data-state")).split(" ").clone()[0];
-	    					  if(checkduplicatetxt=="correct") {
+	    					
+	    					  if(checkduplicatetxt.equals("correct")) {
+
 	    						  checkduplicates.add("correct");
 	    						  break;
 	    					  }
-	    					  else if(checkduplicatetxt=="present"){
+	    					  else if(checkduplicatetxt.equals("present")){
 	    						  checkduplicates.add("present");
 	    						  break;
 	    					  }
@@ -111,11 +113,11 @@ public class interact {
 	    			  }
 	    		  }
 	    		  if(checkduplicates.contains("correct")|| checkduplicates.contains("present")) {
-	    			  System.out.println("present at some other location");
+	    			
 	    			  removeDictionarywords(wordSet,word.charAt(innerdiv-1),innerdiv-1,"present");
 	    		  }
 	    		  else {
-	    			  System.out.println("absent everywhere");
+
 	    			  removeDictionarywords(wordSet,word.charAt(innerdiv-1),innerdiv-1,"absent");
 	    		  }
 	    	  }
@@ -123,19 +125,24 @@ public class interact {
 	      }
 	      
 	      driver.manage().timeouts().implicitlyWait(300, TimeUnit.SECONDS);
-	     // System.out.println("------------------");
-	      if(outerdiv==1) {
-	    	  word="drive";
-	      }
-	      
-	      }
-	      
+	      int wordsetindex=1;
 	      for(String s:wordSet) {
-	    	  System.out.println(s);
+	    	  if(wordsetindex==1) {
+	    		  word=s;
+	    		  break;
+	    	  }
+	    	  
+	      }
+	      if(wordSet.isEmpty()) {
+	    	  break;
+	      }
+	     
+	      
 	      }
 	  
+	  
 
-	        System.out.println("Page title is: " + driver.getTitle());
+//	        System.out.println("Page title is: " + driver.getTitle());
 	        System.out.println("url" + driver.getCurrentUrl());
 	        //driver.quit();
 	        
@@ -148,18 +155,19 @@ public class interact {
 		while (iterator.hasNext()) {
 		    String element = iterator.next();
 		    if(method.equals("correct")) {
-		    	if(element.charAt(charposition)!=chartocheck) {
+		    	if(element.charAt(charposition)!=chartocheck || element.indexOf(chartocheck)==-1) {
 		    	iterator.remove();
 		    	}
 		    }
 		    else if(method.equals("present")){
-		    	if(element.charAt(charposition)==chartocheck) {
+		    	if(element.charAt(charposition)==chartocheck || element.indexOf(chartocheck)==-1) {
 					iterator.remove();
 				    }	
+		    
 		    }
 		    else {
 		    	if(element.indexOf(chartocheck)!=-1) {
-		    		System.out.println("hereee");
+		    		//System.out.println("hereee");
 		    		iterator.remove();
 		    	}
 		    }
