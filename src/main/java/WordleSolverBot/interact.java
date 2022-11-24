@@ -1,4 +1,4 @@
-package psafinal;
+package WordleSolverBot;
 
 
 import java.io.BufferedReader;
