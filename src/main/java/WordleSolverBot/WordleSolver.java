@@ -77,17 +77,23 @@ public class WordleSolver {
 			}
 
 			else if (letterInfo.equals(LetterHint.NOT_PRESENT)) {
-				LetterHint checkDuplicateLetterInfo = checkDuplicates(hints, key, letter);
-
-				if (checkDuplicateLetterInfo.equals(LetterHint.NOT_PRESENT)) {
+//				LetterHint checkDuplicateLetterInfo = checkDuplicates(hints, key, letter);
+				
+//				updateWordSet(wordSet, letter.charAt(0), key, checkDuplicateLetterInfo);
+				
+				if(!checkIfDuplicatesExist(hints, key, letter)) {
 					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.NOT_PRESENT);
-				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
-					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_RIGHT_POSITION);
-				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_WRONG_POSITION);
-				} else {
-					System.out.println("Entered else!! ");
 				}
+
+//				if (checkDuplicateLetterInfo.equals(LetterHint.NOT_PRESENT)) {
+//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.NOT_PRESENT);
+//				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
+//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_RIGHT_POSITION);
+//				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
+//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_WRONG_POSITION);
+//				} else {
+//					System.out.println("Entered else!! ");
+//				}
 			}
 		}
 
@@ -100,25 +106,36 @@ public class WordleSolver {
 
 	}
 
-	private static LetterHint checkDuplicates(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
+//	private static LetterHint checkDuplicates(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
+//			String letter) {
+//		System.out.println("Checking duplicates for " + letter);
+//
+//		Set<Integer> duplicateKeys = hints.keySet();
+//		for (Integer dKey : duplicateKeys) {
+//
+//			if (checkLetterIndex != dKey) {
+//				String newLetter = hints.get(dKey)[0];
+//				LetterHint newLetterInfo = LetterHint.valueOf(hints.get(dKey)[1]);
+//
+//				if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
+//					return LetterHint.PRESENT_AT_RIGHT_POSITION;
+//				} else if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
+//					return LetterHint.PRESENT_AT_WRONG_POSITION;
+//				}
+//			}
+//		}
+//		return LetterHint.NOT_PRESENT;
+//	}
+	
+	private static boolean checkIfDuplicatesExist(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
 			String letter) {
-		System.out.println("Checking duplicates for " + letter);
+		System.out.println("Checking if duplicates exist for " + letter);
 
 		Set<Integer> duplicateKeys = hints.keySet();
 		for (Integer dKey : duplicateKeys) {
-
-			if (checkLetterIndex != dKey) {
-				String newLetter = hints.get(dKey)[0];
-				LetterHint newLetterInfo = LetterHint.valueOf(hints.get(dKey)[1]);
-
-				if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
-					return LetterHint.PRESENT_AT_RIGHT_POSITION;
-				} else if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-					return LetterHint.PRESENT_AT_WRONG_POSITION;
-				}
-			}
+			if (checkLetterIndex != dKey && letter == hints.get(dKey)[0]) return true;
 		}
-		return LetterHint.NOT_PRESENT;
+		return false;
 	}
 
 	private static void updateWordSet(HashSet<String> wordSet, char chartocheck, int charposition, LetterHint method) {
