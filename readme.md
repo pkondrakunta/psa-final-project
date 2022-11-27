@@ -9,4 +9,4 @@ We are working on a Wordle Solving algorithm to guess a word in minimum number o
 
 ### Running the project
 
-You can import the project (Projects from Git option in Eclipse) using the Clone URI option. Once cloned, this run the `main.java`.
+You can import the project (Projects from Git option in Eclipse) using the Clone URI option. Once cloned, run the `WordleConnectorBot.java`.
