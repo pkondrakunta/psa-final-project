@@ -68,7 +68,6 @@ public class WordleConnectorBot {
 
 //		Typing up the word
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
-
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 
 		for (int outerdiv = 1; outerdiv <= ATTEMPTS; outerdiv++) {
@@ -110,16 +109,10 @@ public class WordleConnectorBot {
 				} else if (txt.equals("absent")) {
 					hints.put(letterInWordIndex, new String[] { "" + word.charAt(letterInWordIndex), "NOT_PRESENT" });
 				}
-
 				driver.manage().timeouts().implicitlyWait(300, TimeUnit.SECONDS);
-
 			}
-			
-			
 		}
-
 		System.out.println("url" + driver.getCurrentUrl());
 		// driver.quit();
 	}
-
 }
