@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-public class getRandomword {
+public class getRandomWord {
 	public static <E> E getRandomElement(Set<? extends E> set) {
 
 		Random random = new Random();
