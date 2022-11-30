@@ -73,7 +73,7 @@ public class WordleConnectorBot {
 		for (int outerdiv = 1; outerdiv <= ATTEMPTS; outerdiv++) {
 
 			if (outerdiv > 1) {
-				word = wSolver.recommendWord(hints);
+				word = wSolver.recommendWordMeanSum(hints);
 //				hints.clear();
 				Thread.sleep(2000);
 			}

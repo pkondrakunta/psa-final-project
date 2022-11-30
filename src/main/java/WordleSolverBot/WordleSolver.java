@@ -38,13 +38,10 @@ public class WordleSolver {
 
 	}
 
-	public String recommendWord(Hashtable<Integer, String[]> hints) throws IOException {
+	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints) throws IOException {
 		System.out.println("Recommending Words... ");
-
 		String resultWord = new String();
-
 		deduceHintsUpdateWords(hints);
-
 		int wordsetindex = 1;
 		for (String s : wordSet) {
 			if (wordsetindex == 1) {
@@ -52,16 +49,14 @@ public class WordleSolver {
 				break;
 			}
 		}
-
 		if (wordSet.isEmpty()) {
 			System.out.println("I am out of words! What?!?!");
 		}
 		System.out.println(wordSet);
 		return resultWord;
 	}
-
+	
 	private static void deduceHintsUpdateWords(Hashtable<Integer, String[]> hints) {
-
 		System.out.println("Deducing hints.. Received " + hints.size() + " hints.");
 
 		Enumeration<Integer> e = hints.keys();
@@ -77,59 +72,17 @@ public class WordleSolver {
 			}
 
 			else if (letterInfo.equals(LetterHint.NOT_PRESENT)) {
-//				LetterHint checkDuplicateLetterInfo = checkDuplicates(hints, key, letter);
-				
-//				updateWordSet(wordSet, letter.charAt(0), key, checkDuplicateLetterInfo);
-				
 				if(!checkIfDuplicatesExist(hints, key, letter)) {
 					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.NOT_PRESENT);
 				}
-
-//				if (checkDuplicateLetterInfo.equals(LetterHint.NOT_PRESENT)) {
-//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.NOT_PRESENT);
-//				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
-//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_RIGHT_POSITION);
-//				} else if (checkDuplicateLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-//					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.PRESENT_AT_WRONG_POSITION);
-//				} else {
-//					System.out.println("Entered else!! ");
-//				}
 			}
 		}
 
-//		Set<Integer> setOfKeys = hints.keySet();
-//		// Iterating through the Hashtable
-//		for (Integer i : setOfKeys) {
-//			// Print and display the Rank and Name
-//			System.out.println("Rank : " + i + "\t\t Name : " + hints.get(i)[0] + " " + hints.get(i)[1]);
-//		}
-
 	}
-
-//	private static LetterHint checkDuplicates(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
-//			String letter) {
-//		System.out.println("Checking duplicates for " + letter);
-//
-//		Set<Integer> duplicateKeys = hints.keySet();
-//		for (Integer dKey : duplicateKeys) {
-//
-//			if (checkLetterIndex != dKey) {
-//				String newLetter = hints.get(dKey)[0];
-//				LetterHint newLetterInfo = LetterHint.valueOf(hints.get(dKey)[1]);
-//
-//				if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
-//					return LetterHint.PRESENT_AT_RIGHT_POSITION;
-//				} else if (newLetter == letter && newLetterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-//					return LetterHint.PRESENT_AT_WRONG_POSITION;
-//				}
-//			}
-//		}
-//		return LetterHint.NOT_PRESENT;
-//	}
 	
 	private static boolean checkIfDuplicatesExist(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
 			String letter) {
-		System.out.println("Checking if duplicates exist for " + letter);
+//		System.out.println("Checking if duplicates exist for " + letter);
 
 		Set<Integer> duplicateKeys = hints.keySet();
 		for (Integer dKey : duplicateKeys) {
@@ -174,7 +127,7 @@ public class WordleSolver {
 		hints_hashtable.put(4, new String[] { "z", "NOT_PRESENT" });
 		hints_hashtable.put(5, new String[] { "e", "NOT_PRESENT" });
 		
-		String word = wSolver.recommendWord(hints_hashtable);
+		String word = wSolver.recommendWordMeanSum(hints_hashtable);
 		
 		System.out.println(word);
 	}
