@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class WordleSimulator {
-	
+
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_RED = "\u001B[31m";
 	public static final String ANSI_GREEN = "\u001B[32m";
@@ -21,7 +21,14 @@ public class WordleSimulator {
 
 	public static final int WORD_LENGTH = 5;
 
-	public static void main(String[] args) throws IOException {
+	/**
+	 * 
+	 * @param args
+	 * @return
+	 * @throws IOException
+	 */
+
+	private static int simulateWordle() throws IOException {
 
 		Scanner scn = new Scanner(System.in);
 		File file = new File("wordlist/valid-wordle-words.txt");
@@ -55,16 +62,7 @@ public class WordleSimulator {
 			}
 		}
 
-//		System.out.println(letterfrequency);
-//		System.out.println(firstletter);
-//		System.out.println(secondletter);
-//		System.out.println(thirdletter);
-//		System.out.println(fourthletter);
-//		System.out.println(fifthletter);
-
-		
-		System.out.println(ANSI_BOLD + "Wordle Simulator" + ANSI_RESET);
-//		getRandomWord gtr = new getRandomWord();
+		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);
 		String wordOfTheDay = getRandomWord.getRandomElement(wordSet);
 		// String wordOfTheDay="jiffy";
 
@@ -80,14 +78,23 @@ public class WordleSimulator {
 		}
 //		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
-		// String result="tears";
 
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 
 		while (count < 6) {
-			System.out.println("Enter your " + (count + 1) + " word:");
-			String userGuess = scn.nextLine();
+//			String userGuess = scn.nextLine();
+			String predictedWord = "salet";
+			if (count !=0 ) {
+				predictedWord = wSolver.recommendWordMeanSum(hints);
+				System.out.println("The next recommended guess is: " + predictedWord + "\n");
+			}
+			
+			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
+
+			String userGuess = predictedWord;
+			System.out.println(userGuess + "\n");
+
 
 			if (userGuess.length() != 5) {
 				System.out.println("Oops, that's invalid. Your word is of length " + userGuess.length()
@@ -105,56 +112,52 @@ public class WordleSimulator {
 			} else {
 				for (int letterInWordIndex = 0; letterInWordIndex < wordOfTheDay.length(); letterInWordIndex++) {
 
-					Boolean[] visited = new Boolean[WORD_LENGTH]; 
-					Arrays.fill(visited, Boolean. FALSE);
-					
+					Boolean[] visited = new Boolean[WORD_LENGTH];
+					Arrays.fill(visited, Boolean.FALSE);
+
 					// Checking if letters are at the right position
 					if (wordOfTheDay.charAt(letterInWordIndex) == userGuess.charAt(letterInWordIndex)) { // if it is
 																											// green
 						System.out.print(ANSI_GREEN + userGuess.charAt(letterInWordIndex));
 						System.out.println(" at correct position " + (letterInWordIndex + 1) + ANSI_RESET);
 						visited[letterInWordIndex] = true;
-//						answersofar[charvisit] = userGuess.charAt(charvisit);
-//						removeDictionarywords(copyofWordSet, userGuess.charAt(charvisit), charvisit, "correct");
 						hints.put(letterInWordIndex,
 								new String[] { "" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_RIGHT_POSITION" });
 					} else {
 						int checkLetterPresence = 0;
 						for (int i = 0; i < wordOfTheDay.length(); i++) {
-							if (visited[i] == false
-									&& userGuess.charAt(i) != wordOfTheDay.charAt(i)) {
+							if (visited[i] == false && userGuess.charAt(i) != wordOfTheDay.charAt(i)) {
 								if (userGuess.charAt(letterInWordIndex) == wordOfTheDay.charAt(i)) {
 									checkLetterPresence++;
 									System.out.print(ANSI_YELLOW + userGuess.charAt(letterInWordIndex));
-									System.out.println(
-											" letter present at incorrect position " + (letterInWordIndex + 1) + ANSI_RESET);
+									System.out.println(" letter present at incorrect position "
+											+ (letterInWordIndex + 1) + ANSI_RESET);
 									visited[i] = true;
-									hints.put(letterInWordIndex, new String[] { "" + userGuess.charAt(letterInWordIndex),
-											"PRESENT_AT_WRONG_POSITION" });
+									hints.put(letterInWordIndex, new String[] {
+											"" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_WRONG_POSITION" });
 								}
 							}
 						}
 						if (checkLetterPresence == 0) {
 							System.out.print(userGuess.charAt(letterInWordIndex));
 							System.out.println(" letter not present " + (letterInWordIndex + 1));
-							
-							hints.put(letterInWordIndex, new String[] { "" + userGuess.charAt(letterInWordIndex),
-							"NOT_PRESENT" });
+
+							hints.put(letterInWordIndex,
+									new String[] { "" + userGuess.charAt(letterInWordIndex), "NOT_PRESENT" });
 						}
 
 					}
 
 				}
 
-
-				String predictedWord = wSolver.recommendWordMeanSum(hints);
-				System.out.println("The next recommended guess is: " + predictedWord);
 			}
 
 		}
-		System.out.println("Today's word is " + wordOfTheDay);
-		System.out.println("Game finish");
 
+		System.out.println(ANSI_BOLD+ ANSI_GREEN+ "Today's word is " + wordOfTheDay + ANSI_RESET);
+		System.out.println(ANSI_BOLD + "Game over\n" + ANSI_RESET);
+
+		return count;
 	}
 
 	private static void storefrequency(HashMap<Character, Integer> frequencystore, char currentChar) {
@@ -164,4 +167,12 @@ public class WordleSimulator {
 			frequencystore.put(currentChar, 1);
 		}
 	}
+
+	public static void main(String[] args) throws IOException {
+		int testRunAttempts = simulateWordle();
+
+		System.out.println("That test run took " + testRunAttempts + " attempts.");
+
+	}
+
 }
