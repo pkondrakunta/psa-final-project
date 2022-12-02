@@ -2,9 +2,11 @@ package WordleSolverBot;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -28,6 +30,10 @@ public class WordleSolver {
 
 		setWordLength(length);
 		// Creating the Wordle words list
+		computeWordSet();
+	}
+
+	public void resetWordSet() throws IOException {
 		File file = new File("wordlist/valid-wordle-words.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String word;
@@ -35,11 +41,14 @@ public class WordleSolver {
 		while ((word = br.readLine()) != null) {
 			wordSet.add(word);
 		}
+	}
 
+	public HashSet<String> getWordSet() {
+		return wordSet;
 	}
 
 	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints) throws IOException {
-		System.out.println("Recommending Words... ");
+//		System.out.println("Recommending Words... ");
 		String resultWord = new String();
 		deduceHintsUpdateWords(hints);
 		int wordsetindex = 1;
@@ -55,9 +64,9 @@ public class WordleSolver {
 		System.out.println(wordSet);
 		return resultWord;
 	}
-	
+
 	private static void deduceHintsUpdateWords(Hashtable<Integer, String[]> hints) {
-		System.out.println("Deducing hints.. Received " + hints.size() + " hints.");
+//		System.out.println("Deducing hints.. Received " + hints.size() + " hints.");
 
 		Enumeration<Integer> e = hints.keys();
 		while (e.hasMoreElements()) {
@@ -68,68 +77,58 @@ public class WordleSolver {
 
 			if (letterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)
 					|| letterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-				updateWordSet(wordSet, letter.charAt(0), key, letterInfo);
+				updateWordSet(letter.charAt(0), key, letterInfo);
 			}
 
 			else if (letterInfo.equals(LetterHint.NOT_PRESENT)) {
-				if(!checkIfDuplicatesExist(hints, key, letter)) {
-					updateWordSet(wordSet, letter.charAt(0), key, LetterHint.NOT_PRESENT);
+				System.out.println(checkIfDuplicatesExist(hints, key, letter));
+
+				if (!checkIfDuplicatesExist(hints, key, letter)) {
+					updateWordSet(letter.charAt(0), key, LetterHint.NOT_PRESENT);
 				}
 			}
 		}
 
 	}
-	
+
 	private static boolean checkIfDuplicatesExist(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
 			String letter) {
-//		System.out.println("Checking if duplicates exist for " + letter);
+		System.out.println("Checking if duplicates exist for " + letter);
 
 		Set<Integer> duplicateKeys = hints.keySet();
 		for (Integer dKey : duplicateKeys) {
-			if (checkLetterIndex != dKey && letter == hints.get(dKey)[0]) return true;
+			if (checkLetterIndex != dKey && letter == hints.get(dKey)[0])
+				return true;
 		}
 		return false;
 	}
 
-	private static void updateWordSet(HashSet<String> wordSet, char chartocheck, int charposition, LetterHint method) {
-
-//		System.out.println("Updating words with hint for " + chartocheck);
-//		System.out.println("Before, word set size: \t" + wordSet.size());
-		
+	private static void updateWordSet(char guessedChar, int guessedCharPosition, LetterHint receivedCharHint) {
+		// System.out.println("Deducing hint for " + guessedChar + " " + wordSet);
 		Iterator<String> iterator = wordSet.iterator();
+
 		while (iterator.hasNext()) {
-			String element = iterator.next();
-			if (method.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)) {
-				if (element.charAt(charposition) != chartocheck || element.indexOf(chartocheck) == -1) {
-					iterator.remove();
-				}
-			} else if (method.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
-				if (element.charAt(charposition) == chartocheck || element.indexOf(chartocheck) == -1) {
-					iterator.remove();
-				}
-			} else {
-				if (element.indexOf(chartocheck) != -1) {
-					iterator.remove();
-				}
+			String word = iterator.next();
+			// System.out.println(word + " index: " +charPresenceInWord);
+
+			boolean charPresentInWord = (word.indexOf(guessedChar) == -1) ? false : true;
+
+			if (receivedCharHint.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)
+					&& (word.charAt(guessedCharPosition) != guessedChar || !charPresentInWord)) {
+				iterator.remove();
+			} else if (receivedCharHint.equals(LetterHint.PRESENT_AT_WRONG_POSITION) && (word.charAt(guessedCharPosition) == guessedChar || !charPresentInWord)) {
+				iterator.remove();
+			} else if (receivedCharHint.equals(LetterHint.NOT_PRESENT) && charPresentInWord) {
+				iterator.remove();
 			}
 		}
-
-//		System.out.println("After, word set size: \t" + wordSet.size());
 	}
 
 	public static void main(String[] args) throws IOException {
-		WordleSolver wSolver = new WordleSolver(5);
+//		WordleSolver wSolver = new WordleSolver(5);
+//
+//		updateWordSet('a', 2, LetterHint.NOT_PRESENT);
 
-		Hashtable<Integer, String[]> hints_hashtable = new Hashtable<Integer, String[]>();
-		hints_hashtable.put(1, new String[] { "p", "PRESENT_AT_RIGHT_POSITION" });
-		hints_hashtable.put(2, new String[] { "r", "PRESENT_AT_RIGHT_POSITION" });
-		hints_hashtable.put(3, new String[] { "i", "NOT_PRESENT" });
-		hints_hashtable.put(4, new String[] { "z", "NOT_PRESENT" });
-		hints_hashtable.put(5, new String[] { "e", "NOT_PRESENT" });
-		
-		String word = wSolver.recommendWordMeanSum(hints_hashtable);
-		
-		System.out.println(word);
 	}
 
 	public static Integer getWordLength() {
@@ -140,4 +139,44 @@ public class WordleSolver {
 		WordleSolver.wordLength = wordLength;
 	}
 
+	private static void computeWordSet() throws IOException {
+		File file = new File("wordlist/valid-wordle-words.txt");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String word;
+
+//		HashSet<String> wordSet = new HashSet<String>();
+		HashMap<Character, Integer> letterFrequency = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> firstletter = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> secondletter = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> thirdletter = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> fourthletter = new HashMap<Character, Integer>();
+		HashMap<Character, Integer> fifthletter = new HashMap<Character, Integer>();
+
+		while ((word = br.readLine()) != null) {
+			wordSet.add(word);
+
+			for (int i = 0; i < word.length(); i++) {
+				if (i == 0) {
+					storefrequency(firstletter, word.charAt(i));
+				} else if (i == 1) {
+					storefrequency(secondletter, word.charAt(i));
+				} else if (i == 2) {
+					storefrequency(thirdletter, word.charAt(i));
+				} else if (i == 3) {
+					storefrequency(fourthletter, word.charAt(i));
+				} else {
+					storefrequency(fifthletter, word.charAt(i));
+				}
+				storefrequency(letterFrequency, word.charAt(i));
+			}
+		}
+	}
+
+	private static void storefrequency(HashMap<Character, Integer> frequencystore, char currentChar) {
+		if (frequencystore.containsKey(currentChar)) {
+			frequencystore.put(currentChar, frequencystore.get(currentChar) + 1);
+		} else {
+			frequencystore.put(currentChar, 1);
+		}
+	}
 }

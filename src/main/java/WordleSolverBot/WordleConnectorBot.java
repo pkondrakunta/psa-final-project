@@ -64,7 +64,7 @@ public class WordleConnectorBot {
 
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		Actions act = new Actions(driver);
-		String word = "prize";
+		String word = "salet";
 
 //		Typing up the word
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
@@ -74,8 +74,6 @@ public class WordleConnectorBot {
 
 			if (outerdiv > 1) {
 				word = wSolver.recommendWordMeanSum(hints);
-//				hints.clear();
-				Thread.sleep(2000);
 			}
 
 			System.out.println("Typing " + word);
