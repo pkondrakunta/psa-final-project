@@ -61,7 +61,7 @@ public class WordleSolver {
 		if (wordSet.isEmpty()) {
 			System.out.println("I am out of words! What?!?!");
 		}
-		System.out.println(wordSet);
+		//System.out.println(wordSet);
 		return resultWord;
 	}
 
@@ -72,8 +72,11 @@ public class WordleSolver {
 		while (e.hasMoreElements()) {
 			// Getting the key of a particular entry
 			int key = e.nextElement();
+
 			String letter = hints.get(key)[0];
+			//System.out.println("letter+ "+letter);
 			LetterHint letterInfo = LetterHint.valueOf(hints.get(key)[1]);
+			//System.out.println("letterinfo "+letterInfo);
 
 			if (letterInfo.equals(LetterHint.PRESENT_AT_RIGHT_POSITION)
 					|| letterInfo.equals(LetterHint.PRESENT_AT_WRONG_POSITION)) {
@@ -81,9 +84,12 @@ public class WordleSolver {
 			}
 
 			else if (letterInfo.equals(LetterHint.NOT_PRESENT)) {
-				System.out.println(checkIfDuplicatesExist(hints, key, letter));
+				//System.out.println(checkIfDuplicatesExist(hints, key, letter));
+				boolean dupe=checkIfDuplicatesExist(hints, key, letter);
+				//System.out.println(dupe);
 
-				if (!checkIfDuplicatesExist(hints, key, letter)) {
+				if (!dupe) {
+
 					updateWordSet(letter.charAt(0), key, LetterHint.NOT_PRESENT);
 				}
 			}
@@ -93,12 +99,18 @@ public class WordleSolver {
 
 	private static boolean checkIfDuplicatesExist(Hashtable<Integer, String[]> hints, Integer checkLetterIndex,
 			String letter) {
-		System.out.println("Checking if duplicates exist for " + letter);
+		//System.out.println("Checking if duplicates exist for " + letter);
 
 		Set<Integer> duplicateKeys = hints.keySet();
 		for (Integer dKey : duplicateKeys) {
-			if (checkLetterIndex != dKey && letter == hints.get(dKey)[0])
+			//System.out.println("dkey: "+dKey+" cgeckLetterIndex "+checkLetterIndex);
+			//System.out.println("letter "+letter);
+			//System.out.println("hints.get(dkey) "+ hints.get(dKey)[0]);
+
+			if ((!checkLetterIndex.equals(dKey)) && letter.equals(hints.get(dKey)[0])){
+				//System.out.println("duplicate exist");
 				return true;
+			}
 		}
 		return false;
 	}

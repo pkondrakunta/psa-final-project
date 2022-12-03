@@ -9,7 +9,7 @@ public class WordleTestRuns {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		testInfo[] testData = new testInfo[50];
 
-		int testRuns = 5;
+		int testRuns = 50;
 
 		WordleSolver w = new WordleSolver(WORD_LENGTH);
 
