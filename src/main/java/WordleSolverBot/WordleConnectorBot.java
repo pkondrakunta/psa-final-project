@@ -70,13 +70,16 @@ public class WordleConnectorBot {
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 
+		String prevGuess = null;
 		for (int outerdiv = 1; outerdiv <= ATTEMPTS; outerdiv++) {
 
 			if (outerdiv > 1) {
-				word = wSolver.recommendWordMeanSum(hints);
+				word = wSolver.recommendWordMeanSum(hints, prevGuess);
 			}
 
+			prevGuess = word;
 			System.out.println("Typing " + word);
+			
 
 			for (int innerdiv = 1; innerdiv <= WORD_LENGTH; innerdiv++) {
 				web = driver.findElement(By.xpath(
