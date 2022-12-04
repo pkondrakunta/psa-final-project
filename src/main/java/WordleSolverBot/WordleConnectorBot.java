@@ -84,12 +84,12 @@ public class WordleConnectorBot {
 			for (int innerdiv = 1; innerdiv <= WORD_LENGTH; innerdiv++) {
 				web = driver.findElement(By.xpath(
 						"/html/body/div/div/div[2]/div/div[1]/div/div[" + outerdiv + "]/div[" + innerdiv + "]/div"));
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				act.sendKeys(word.charAt(innerdiv - 1) + "").perform();
 			}
 
 			act.sendKeys(Keys.ENTER).perform();
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 
 			for (int innerdiv = 1; innerdiv <= WORD_LENGTH; innerdiv++) {
 //				Retrieving hints from the web page
