@@ -53,17 +53,18 @@ public class WordleSimulator {
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 
+		String prevGuess = null;
+		
 		while (count < 6) {
-
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints);
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess);
 			}
 			System.out.println("The next recommended guess is: " + predictedWord + "\n");
 			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
 
 			String userGuess = scn.nextLine();
-
+			prevGuess = userGuess;
 			if (userGuess.length() != 5) {
 				System.out.println("Oops, that's invalid. Your word is of length " + userGuess.length()
 						+ ". We need a 5-letter word.");
@@ -136,14 +137,15 @@ public class WordleSimulator {
 
 		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
+		String prevGuess = null;
 		while (count < 6) {
 
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints);
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess);
 			}
 			String userGuess = predictedWord;
-
+			prevGuess = userGuess;
 			count++;
 			if (wordOfTheDay.equals(userGuess)) {
 				break;
