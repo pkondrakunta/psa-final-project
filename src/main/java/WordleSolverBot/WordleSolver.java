@@ -51,7 +51,7 @@ public class WordleSolver {
 		return wordSet;
 	}
 
-	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints, String guessedWord) throws IOException {
+	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints, String guessedWord, boolean newAlg) throws IOException {
 //		System.out.println("Recommending Words... ");
 		String resultWord = new String();
 		deduceHintsUpdateWords(hints, guessedWord);
@@ -66,17 +66,39 @@ public class WordleSolver {
 //			}
 //		}
 
-		// Algorithm1 End
+		
+		if(newAlg==true){
 
-		// Algorithm2 Start
-		resultWord = maxFreqScoreWord();
+			System.out.println("Using 2nd algorithm...");
 
-		// Algorithm2 End
+			resultWord = maxFreqScoreWord();
+
+		}
+
+		if(newAlg==false){
+
+			int wordsetindex = 1;
+			for(String s: wordSet){
+
+				if(wordsetindex==1){
+
+					resultWord=s;
+					break;
+				}
+			}
+			
+
+
+		}
+		
+
+		
 
 		if (wordSet.isEmpty()) {
 			System.out.println("I am out of words! What?!?!");
 		}
-		System.out.println(wordSet);
+		System.out.println("The word set remaining is:" + wordSet);
+		System.out.println("The length of word set remaining is "+ wordSet.size());
 		return resultWord;
 	}
 

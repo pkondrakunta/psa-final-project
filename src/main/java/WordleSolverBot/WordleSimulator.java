@@ -58,7 +58,7 @@ public class WordleSimulator {
 		while (count < 6) {
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess);
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess,false);
 			}
 			System.out.println("The next recommended guess is: " + predictedWord + "\n");
 			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
@@ -128,12 +128,18 @@ public class WordleSimulator {
 
 	}
 
-	public static testInfo automatedWordlePlayer(WordleSolver wSolver) throws IOException {
+	public static testInfo automatedWordlePlayer(WordleSolver wSolver, String word) throws IOException {
 
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 		HashSet<String> fiveLetterWordSet = wSolver.getWordSet();
 
+
+
 		String wordOfTheDay = getRandomWord.getRandomElement(fiveLetterWordSet);
+
+		if(word!=null){
+			wordOfTheDay=word;
+		}
 
 		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
@@ -142,7 +148,7 @@ public class WordleSimulator {
 
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess);
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess,true); // change this to false if new alg is not being used
 			}
 			String userGuess = predictedWord;
 			prevGuess = userGuess;
