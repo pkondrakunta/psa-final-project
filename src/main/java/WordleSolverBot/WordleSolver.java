@@ -67,9 +67,11 @@ public class WordleSolver {
 					break;
 				}
 			}
+			break;
 		case 2:
 			// Case 2: Picking word with maximum frequency score in remaining list
 			resultWord = maxFreqScoreWord();
+			break;
 		}
 		
 		if (wordSet.isEmpty()) {
