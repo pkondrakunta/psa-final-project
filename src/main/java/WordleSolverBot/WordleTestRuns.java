@@ -33,7 +33,7 @@ public class WordleTestRuns {
 
 		try {
 			// Change name of file based on the algorithm - case1.csv, case2.csv
-            FileOutputStream fis = new FileOutputStream("results/case2.csv");
+            FileOutputStream fis = new FileOutputStream("results/case1.csv");
             OutputStreamWriter isr = new OutputStreamWriter(fis);
             BufferedWriter bw = new BufferedWriter(isr);
             int j = 50;

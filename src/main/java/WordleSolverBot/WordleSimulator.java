@@ -33,29 +33,26 @@ public class WordleSimulator {
 
 		@SuppressWarnings("resource")
 		Scanner scn = new Scanner(System.in);
-
-		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);
-//		String wordOfTheDay = getRandomWord.getRandomElement(wordSet);
+		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);		
 		String wordOfTheDay = "torso";
-
-//		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
 
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
-
 		String prevGuess = null;
 
 		while (count < 6) {
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWord(hints, prevGuess, 1);
+				predictedWord = wSolver.recommendWord(hints, prevGuess, 2);
 			}
 			System.out.println("The next recommended guess is: " + predictedWord + "\n");
 			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
 
 			String userGuess = scn.nextLine();
 			prevGuess = userGuess;
+
+			// Checking validity
 			if (userGuess.length() != 5) {
 				System.out.println("Oops, that's invalid. Your word is of length " + userGuess.length()
 						+ ". We need a 5-letter word.");
@@ -65,47 +62,40 @@ public class WordleSimulator {
 				System.out.println("Oops, that's invalid. It's not a word. Try again!");
 				continue;
 			}
+
 			count++;
+
+			// Check win
 			if (wordOfTheDay.equals(userGuess)) {
 				System.out.println("\nCongratulations! That's correct. You won in " + count + " attempts.");
 				break;
 			} else {
 				System.out.println("");
+				HashMap<Character, Integer> refWordFreq = getLetterFreqInWord(wordOfTheDay);
 
 				for (int letterInWordIndex = 0; letterInWordIndex < wordOfTheDay.length(); letterInWordIndex++) {
 
-					Boolean[] visited = new Boolean[WORD_LENGTH];
-					Arrays.fill(visited, Boolean.FALSE);
+					char letterInCheck = userGuess.charAt(letterInWordIndex);
 
 					// Checking if letters are at the right position
-					if (wordOfTheDay.charAt(letterInWordIndex) == userGuess.charAt(letterInWordIndex)) { // if it is
-																											// green
-						System.out
-								.print(ANSI_BOLD + ANSI_GREEN + userGuess.charAt(letterInWordIndex) + ANSI_RESET + " ");
-//						System.out.println(" at correct position " + (letterInWordIndex + 1) + ANSI_RESET);
-						visited[letterInWordIndex] = true;
-						hints.put(letterInWordIndex,
-								new String[] { "" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_RIGHT_POSITION" });
-					} else {
-						int checkLetterPresence = 0;
-						for (int i = 0; i < wordOfTheDay.length(); i++) {
-							if (visited[i] == false && userGuess.charAt(i) != wordOfTheDay.charAt(i)) {
-								if (userGuess.charAt(letterInWordIndex) == wordOfTheDay.charAt(i)) {
-									checkLetterPresence++;
-									System.out.print(ANSI_BOLD + ANSI_YELLOW + userGuess.charAt(letterInWordIndex)
-											+ ANSI_RESET + " ");
-//									System.out.println(" letter present at incorrect position "
-//											+ (letterInWordIndex + 1) + ANSI_RESET);
-									visited[i] = true;
-									hints.put(letterInWordIndex, new String[] {
-											"" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_WRONG_POSITION" });
-								}
-							}
-						}
-						if (checkLetterPresence == 0) {
-							System.out.print(ANSI_BOLD + userGuess.charAt(letterInWordIndex) + " " + ANSI_RESET);
-//							System.out.println(" letter not present " + (letterInWordIndex + 1));
+					if (wordOfTheDay.charAt(letterInWordIndex) == letterInCheck) {
+						System.out.print(ANSI_BOLD + ANSI_GREEN + letterInCheck + ANSI_RESET + " ");
+						hints.put(letterInWordIndex, new String[] { "" + letterInCheck, "PRESENT_AT_RIGHT_POSITION" });
+						refWordFreq.put(letterInCheck, refWordFreq.get(letterInCheck) - 1);
 
+					} else {
+						// Checking if letters are present
+						if (refWordFreq.containsKey(letterInCheck) && refWordFreq.get(letterInCheck) > 0) {
+							System.out.print(
+									ANSI_BOLD + ANSI_YELLOW + userGuess.charAt(letterInWordIndex) + ANSI_RESET + " ");
+							hints.put(letterInWordIndex, new String[] { "" + userGuess.charAt(letterInWordIndex),
+									"PRESENT_AT_WRONG_POSITION" });
+							refWordFreq.put(letterInCheck, refWordFreq.get(letterInCheck) - 1);
+						}
+
+						// Checking if letters are not present
+						else {
+							System.out.print(ANSI_BOLD + userGuess.charAt(letterInWordIndex) + " " + ANSI_RESET);
 							hints.put(letterInWordIndex,
 									new String[] { "" + userGuess.charAt(letterInWordIndex), "NOT_PRESENT" });
 						}
@@ -126,31 +116,21 @@ public class WordleSimulator {
 	public static testInfo automatedWordlePlayer(WordleSolver wSolver, String word) throws IOException {
 
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
-		HashSet<String> fiveLetterWordSet = wSolver.getWordSet();
-
-		File file = new File("wordlist/possible-wordle-words.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String w;
-
-		while ((w = br.readLine()) != null) {
-			nytWordSet.add(w);
-		}
-
-		String wordOfTheDay = getRandomWord.getRandomElement(nytWordSet);
+		String wordOfTheDay = getWordOfTheDay();
 
 		if (word != null) {
 			wordOfTheDay = word;
 		}
 
-		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
 		String prevGuess = null;
+
 		while (count < 6) {
 
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWord(hints, prevGuess, 2); // change this to 1 if new alg is not
-																					// being used
+				predictedWord = wSolver.recommendWord(hints, prevGuess, 1); // change this to 1 if new alg is not
+																			// being used
 			}
 			String userGuess = predictedWord;
 			prevGuess = userGuess;
@@ -158,41 +138,81 @@ public class WordleSimulator {
 			if (wordOfTheDay.equals(userGuess)) {
 				break;
 			} else {
-				for (int letterInWordIndex = 0; letterInWordIndex < wordOfTheDay.length(); letterInWordIndex++) {
+				HashMap<Character, Integer> refWordFreq = getLetterFreqInWord(wordOfTheDay);
 
-					Boolean[] visited = new Boolean[WORD_LENGTH];
-					Arrays.fill(visited, Boolean.FALSE);
+				for (int letterInWordIndex = 0; letterInWordIndex < wordOfTheDay.length(); letterInWordIndex++) {
+					char letterInCheck = userGuess.charAt(letterInWordIndex);
 
 					// Checking if letters are at the right position
-					if (wordOfTheDay.charAt(letterInWordIndex) == userGuess.charAt(letterInWordIndex)) { // if it is
-						visited[letterInWordIndex] = true;
-						hints.put(letterInWordIndex,
-								new String[] { "" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_RIGHT_POSITION" });
+					if (wordOfTheDay.charAt(letterInWordIndex) == letterInCheck) {
+						System.out.print(ANSI_BOLD + ANSI_GREEN + letterInCheck + ANSI_RESET + " ");
+						hints.put(letterInWordIndex, new String[] { "" + letterInCheck, "PRESENT_AT_RIGHT_POSITION" });
+						refWordFreq.put(letterInCheck, refWordFreq.get(letterInCheck) - 1);
+
 					} else {
-						int checkLetterPresence = 0;
-						for (int i = 0; i < wordOfTheDay.length(); i++) {
-							if (visited[i] == false && userGuess.charAt(i) != wordOfTheDay.charAt(i)) {
-								if (userGuess.charAt(letterInWordIndex) == wordOfTheDay.charAt(i)) {
-									checkLetterPresence++;
-									visited[i] = true;
-									hints.put(letterInWordIndex, new String[] {
-											"" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_WRONG_POSITION" });
-								}
-							}
+						// Checking if letters are present
+						if (refWordFreq.containsKey(letterInCheck) && refWordFreq.get(letterInCheck) > 0) {
+							System.out.print(
+									ANSI_BOLD + ANSI_YELLOW + userGuess.charAt(letterInWordIndex) + ANSI_RESET + " ");
+							hints.put(letterInWordIndex, new String[] { "" + userGuess.charAt(letterInWordIndex),
+									"PRESENT_AT_WRONG_POSITION" });
+							refWordFreq.put(letterInCheck, refWordFreq.get(letterInCheck) - 1);
 						}
-						if (checkLetterPresence == 0) {
+
+						// Checking if letters are not present
+						else {
+							System.out.print(ANSI_BOLD + userGuess.charAt(letterInWordIndex) + " " + ANSI_RESET);
 							hints.put(letterInWordIndex,
 									new String[] { "" + userGuess.charAt(letterInWordIndex), "NOT_PRESENT" });
 						}
 
 					}
-
 				}
 
 			}
 
 		}
 		return new testInfo(wordOfTheDay, count);
+	}
+
+	private static void addCharFrequency(HashMap<Character, Integer> mp, char letter) {
+		if (mp.containsKey(letter)) {
+			mp.put(letter, mp.get(letter) + 1);
+		} else {
+			mp.put(letter, 1);
+		}
+	}
+
+	private static HashMap<Character, Integer> getLetterFreqInWord(String word) {
+		HashMap<Character, Integer> mp = new HashMap<Character, Integer>();
+
+		for (int i = 0; i < word.length(); i++) {
+			char letter = word.charAt(i);
+			if (mp.containsKey(letter)) {
+				mp.put(letter, mp.get(letter) + 1);
+			} else {
+				mp.put(letter, 1);
+			}
+		}
+		return mp;
+	}
+
+	private static String getWordOfTheDay() throws IOException {
+
+		if (nytWordSet.isEmpty()) {
+			File file = new File("wordlist/possible-wordle-words.txt");
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String w;
+
+			while ((w = br.readLine()) != null) {
+				nytWordSet.add(w);
+			}
+		}
+
+		String word = getRandomWord.getRandomElement(nytWordSet);
+		System.out.println("Today's word is " + word);
+
+		return word;
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

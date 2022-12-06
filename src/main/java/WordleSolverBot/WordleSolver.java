@@ -22,6 +22,8 @@ public class WordleSolver {
 //	class variables
 	private static HashSet<String> wordSet = new HashSet<String>();
 	private static HashMap<String, Double> wordFreqScores = new HashMap<String, Double>();
+	private static HashMap<String, Double> wordEntropyTable = new HashMap<String, Double>();
+
 	private static Integer wordLength;
 	private static Integer numOfWords;
 
@@ -252,7 +254,7 @@ public class WordleSolver {
 			}
 			wordFreqScores.put(word, wordFreqScore);
 		}
-//		System.out.println("The probbability/frequency scores are: " + wordFreqScores);
+//		System.out.println("The probability/frequency scores are: " + wordFreqScores);
 	}
 
 	public static void main(String[] args) throws IOException {
