@@ -20,11 +20,8 @@ public class WordleTestRuns {
 		WordleSimulator sim = new WordleSimulator();
 		System.out.println("Running tests.. ");
 		for (int tests = 0; tests < testRuns; tests++) {
-			System.out.println("Running Test " + tests);
-
 			testData[tests] = sim.automatedWordlePlayer(w,null);
 			
-			Thread.sleep(1000);
 			w.resetWordSet();
 		}
 
@@ -35,7 +32,8 @@ public class WordleTestRuns {
 		}
 
 		try {
-            FileOutputStream fis = new FileOutputStream("wordlist/testrun.csv");
+			// Change name of file based on the algorithm - case1.csv, case2.csv
+            FileOutputStream fis = new FileOutputStream("results/case2.csv");
             OutputStreamWriter isr = new OutputStreamWriter(fis);
             BufferedWriter bw = new BufferedWriter(isr);
             int j = 50;

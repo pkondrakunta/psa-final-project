@@ -55,11 +55,11 @@ public class WordleSimulator {
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 
 		String prevGuess = null;
-		
+
 		while (count < 6) {
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess,false);
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess, 2);
 			}
 			System.out.println("The next recommended guess is: " + predictedWord + "\n");
 			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
@@ -134,9 +134,7 @@ public class WordleSimulator {
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 		HashSet<String> fiveLetterWordSet = wSolver.getWordSet();
 
-		
-
-		File file = new File("wordlist/nyt_wordlist.txt");
+		File file = new File("wordlist/possible-wordle-words.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String w;
 
@@ -144,13 +142,10 @@ public class WordleSimulator {
 			nytWordSet.add(w);
 		}
 
-
-
 		String wordOfTheDay = getRandomWord.getRandomElement(nytWordSet);
-		
 
-		if(word!=null){
-			wordOfTheDay=word;
+		if (word != null) {
+			wordOfTheDay = word;
 		}
 
 		System.out.println("Today's word is " + wordOfTheDay);
@@ -160,7 +155,8 @@ public class WordleSimulator {
 
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess,true); // change this to false if new alg is not being used
+				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess, 2); // change this to 1 if new alg is not
+																					// being used
 			}
 			String userGuess = predictedWord;
 			prevGuess = userGuess;

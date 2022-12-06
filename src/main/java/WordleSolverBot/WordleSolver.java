@@ -38,7 +38,7 @@ public class WordleSolver {
 	}
 
 	public void resetWordSet() throws IOException {
-		File file = new File("wordlist/valid-wordle-words.txt");
+		File file = new File("wordlist/allowed-wordle-words.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String word;
 
@@ -51,54 +51,30 @@ public class WordleSolver {
 		return wordSet;
 	}
 
-	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints, String guessedWord, boolean newAlg) throws IOException {
+	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints, String guessedWord, int typeOfRun) throws IOException {
 //		System.out.println("Recommending Words... ");
 		String resultWord = new String();
 		deduceHintsUpdateWords(hints, guessedWord);
-
-		// Algorithm1 Start
-
-//		int wordsetindex = 1;
-//		for (String s : wordSet) {
-//			if (wordsetindex == 1) {
-//				resultWord = s;
-//				break;
-//			}
-//		}
-
 		
-		if(newAlg==true){
-
-			System.out.println("Using 2nd algorithm...");
-
-			resultWord = maxFreqScoreWord();
-
-		}
-
-		if(newAlg==false){
-
+		switch (typeOfRun) {
+		case 1:
+			// Case 1: Picking first word in remaining list
 			int wordsetindex = 1;
 			for(String s: wordSet){
-
 				if(wordsetindex==1){
-
 					resultWord=s;
 					break;
 				}
 			}
-			
-
-
+		case 2:
+			// Case 2: Picking word with maximum frequency score in remaining list
+			resultWord = maxFreqScoreWord();
 		}
 		
-
-		
-
 		if (wordSet.isEmpty()) {
 			System.out.println("I am out of words! What?!?!");
 		}
-		System.out.println("The word set remaining is:" + wordSet);
-		System.out.println("The length of word set remaining is "+ wordSet.size());
+		System.out.println(wordSet.size() + " words remaining: " + wordSet);
 		return resultWord;
 	}
 
@@ -188,7 +164,7 @@ public class WordleSolver {
 	}
 
 	private static void computeWordSet() throws IOException {
-		File file = new File("wordlist/valid-wordle-words.txt");
+		File file = new File("wordlist/allowed-wordle-words.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String word;
 
@@ -235,7 +211,7 @@ public class WordleSolver {
 			}
 		}
 
-		System.out.println("Max score word: " + maxScoreWord + ", score: " + maxScore);
+//		System.out.println("Max score word: " + maxScoreWord + ", score: " + maxScore);
 
 		return maxScoreWord;
 

@@ -74,7 +74,7 @@ public class WordleConnectorBot {
 		for (int outerdiv = 1; outerdiv <= ATTEMPTS; outerdiv++) {
 
 			if (outerdiv > 1) {
-				word = wSolver.recommendWordMeanSum(hints, prevGuess,false); // change to true if new alg is being used
+				word = wSolver.recommendWordMeanSum(hints, prevGuess,2); // change to true if new alg is being used
 			}
 
 			prevGuess = word;
