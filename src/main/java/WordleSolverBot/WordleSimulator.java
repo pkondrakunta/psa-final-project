@@ -20,6 +20,7 @@ public class WordleSimulator {
 	public static final String ANSI_BOLD = "\u001B[1m";
 
 	public static final int WORD_LENGTH = 5;
+	private static HashSet<String> nytWordSet = new HashSet<String>();
 
 	/**
 	 * 
@@ -133,9 +134,20 @@ public class WordleSimulator {
 		Hashtable<Integer, String[]> hints = new Hashtable<Integer, String[]>();
 		HashSet<String> fiveLetterWordSet = wSolver.getWordSet();
 
+		
+
+		File file = new File("wordlist/nyt_wordlist.txt");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String w;
+
+		while ((w = br.readLine()) != null) {
+			nytWordSet.add(w);
+		}
 
 
-		String wordOfTheDay = getRandomWord.getRandomElement(fiveLetterWordSet);
+
+		String wordOfTheDay = getRandomWord.getRandomElement(nytWordSet);
+		
 
 		if(word!=null){
 			wordOfTheDay=word;
