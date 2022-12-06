@@ -36,18 +36,8 @@ public class WordleSimulator {
 
 		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);
 //		String wordOfTheDay = getRandomWord.getRandomElement(wordSet);
-		String wordOfTheDay = "mured";
+		String wordOfTheDay = "torso";
 
-		HashSet<Character> englishWords = new HashSet<Character>();
-		for (int i = 0; i < 26; i++) {
-
-			englishWords.add((char) (i + 97));
-		}
-
-		Character[] answersofar = new Character[5];
-		for (int i = 0; i < 5; i++) {
-			answersofar[i] = '*';
-		}
 //		System.out.println("Today's word is " + wordOfTheDay);
 		int count = 0;
 
@@ -59,7 +49,7 @@ public class WordleSimulator {
 		while (count < 6) {
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess, 2);
+				predictedWord = wSolver.recommendWord(hints, prevGuess, 1);
 			}
 			System.out.println("The next recommended guess is: " + predictedWord + "\n");
 			System.out.println("Enter your word (Attempt " + (count + 1) + "): ");
@@ -77,9 +67,11 @@ public class WordleSimulator {
 			}
 			count++;
 			if (wordOfTheDay.equals(userGuess)) {
-				System.out.println("That's correct. You won in " + count + " attempts!");
+				System.out.println("\nCongratulations! That's correct. You won in " + count + " attempts.");
 				break;
 			} else {
+				System.out.println("");
+
 				for (int letterInWordIndex = 0; letterInWordIndex < wordOfTheDay.length(); letterInWordIndex++) {
 
 					Boolean[] visited = new Boolean[WORD_LENGTH];
@@ -88,8 +80,9 @@ public class WordleSimulator {
 					// Checking if letters are at the right position
 					if (wordOfTheDay.charAt(letterInWordIndex) == userGuess.charAt(letterInWordIndex)) { // if it is
 																											// green
-						System.out.print(ANSI_GREEN + userGuess.charAt(letterInWordIndex));
-						System.out.println(" at correct position " + (letterInWordIndex + 1) + ANSI_RESET);
+						System.out
+								.print(ANSI_BOLD + ANSI_GREEN + userGuess.charAt(letterInWordIndex) + ANSI_RESET + " ");
+//						System.out.println(" at correct position " + (letterInWordIndex + 1) + ANSI_RESET);
 						visited[letterInWordIndex] = true;
 						hints.put(letterInWordIndex,
 								new String[] { "" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_RIGHT_POSITION" });
@@ -99,9 +92,10 @@ public class WordleSimulator {
 							if (visited[i] == false && userGuess.charAt(i) != wordOfTheDay.charAt(i)) {
 								if (userGuess.charAt(letterInWordIndex) == wordOfTheDay.charAt(i)) {
 									checkLetterPresence++;
-									System.out.print(ANSI_YELLOW + userGuess.charAt(letterInWordIndex));
-									System.out.println(" letter present at incorrect position "
-											+ (letterInWordIndex + 1) + ANSI_RESET);
+									System.out.print(ANSI_BOLD + ANSI_YELLOW + userGuess.charAt(letterInWordIndex)
+											+ ANSI_RESET + " ");
+//									System.out.println(" letter present at incorrect position "
+//											+ (letterInWordIndex + 1) + ANSI_RESET);
 									visited[i] = true;
 									hints.put(letterInWordIndex, new String[] {
 											"" + userGuess.charAt(letterInWordIndex), "PRESENT_AT_WRONG_POSITION" });
@@ -109,8 +103,8 @@ public class WordleSimulator {
 							}
 						}
 						if (checkLetterPresence == 0) {
-							System.out.print(userGuess.charAt(letterInWordIndex));
-							System.out.println(" letter not present " + (letterInWordIndex + 1));
+							System.out.print(ANSI_BOLD + userGuess.charAt(letterInWordIndex) + " " + ANSI_RESET);
+//							System.out.println(" letter not present " + (letterInWordIndex + 1));
 
 							hints.put(letterInWordIndex,
 									new String[] { "" + userGuess.charAt(letterInWordIndex), "NOT_PRESENT" });
@@ -119,7 +113,7 @@ public class WordleSimulator {
 					}
 
 				}
-
+				System.out.println("\n");
 			}
 
 		}
@@ -155,7 +149,7 @@ public class WordleSimulator {
 
 			String predictedWord = "salet";
 			if (count != 0) {
-				predictedWord = wSolver.recommendWordMeanSum(hints, prevGuess, 2); // change this to 1 if new alg is not
+				predictedWord = wSolver.recommendWord(hints, prevGuess, 2); // change this to 1 if new alg is not
 																					// being used
 			}
 			String userGuess = predictedWord;

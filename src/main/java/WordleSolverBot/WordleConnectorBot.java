@@ -38,7 +38,7 @@ public class WordleConnectorBot {
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 //		Creating a set of prospective words
-		File file = new File("wordlist/valid-wordle-words.txt");
+		File file = new File("wordlist/allowed-wordle-words.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String st;
 		HashSet<String> wordSet = new HashSet<String>();
@@ -74,7 +74,7 @@ public class WordleConnectorBot {
 		for (int outerdiv = 1; outerdiv <= ATTEMPTS; outerdiv++) {
 
 			if (outerdiv > 1) {
-				word = wSolver.recommendWordMeanSum(hints, prevGuess,2); // change to true if new alg is being used
+				word = wSolver.recommendWord(hints, prevGuess,2); // change to true if new alg is being used
 			}
 
 			prevGuess = word;

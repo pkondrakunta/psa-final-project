@@ -35,6 +35,7 @@ public class WordleSolver {
 		setWordLength(length);
 		// Creating the Wordle words list
 		computeWordSet();
+		System.out.println(wordSet.size()+ " words in the list!");
 	}
 
 	public void resetWordSet() throws IOException {
@@ -51,7 +52,7 @@ public class WordleSolver {
 		return wordSet;
 	}
 
-	public String recommendWordMeanSum(Hashtable<Integer, String[]> hints, String guessedWord, int typeOfRun) throws IOException {
+	public String recommendWord(Hashtable<Integer, String[]> hints, String guessedWord, int typeOfRun) throws IOException {
 //		System.out.println("Recommending Words... ");
 		String resultWord = new String();
 		deduceHintsUpdateWords(hints, guessedWord);
@@ -121,10 +122,6 @@ public class WordleSolver {
 
 		Set<Integer> duplicateKeys = hints.keySet();
 		for (Integer dKey : duplicateKeys) {
-			// System.out.println("dkey: "+dKey+" cgeckLetterIndex "+checkLetterIndex);
-			// System.out.println("letter "+letter);
-			// System.out.println("hints.get(dkey) "+ hints.get(dKey)[0]);
-
 			if ((!checkLetterIndex.equals(dKey)) && letter.equals(hints.get(dKey)[0])) {
 				// System.out.println("duplicate exist");
 				return true;
