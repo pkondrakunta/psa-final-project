@@ -28,7 +28,7 @@ public class WordleSolver {
 	private static Integer numOfWords;
 
 	public static enum LetterHint {
-		NOT_PRESENT, PRESENT_AT_RIGHT_POSITION, PRESENT_AT_WRONG_POSITION
+		NOT_PRESENT, PRESENT_AT_RIGHT_POSITION, PRESENT_AT_WRONG_POSITION, REMOVE_REPEATING
 	}
 
 	// Constructor
@@ -37,7 +37,7 @@ public class WordleSolver {
 		setWordLength(length);
 		// Creating the Wordle words list
 		computeWordSet();
-		System.out.println(wordSet.size()+ " words in the list!");
+		System.out.println(wordSet.size() + " words in the list!");
 	}
 
 	public void resetWordSet() throws IOException {
@@ -54,18 +54,19 @@ public class WordleSolver {
 		return wordSet;
 	}
 
-	public String recommendWord(Hashtable<Integer, String[]> hints, String guessedWord, int typeOfRun) throws IOException {
+	public String recommendWord(Hashtable<Integer, String[]> hints, String guessedWord, int typeOfRun)
+			throws IOException {
 //		System.out.println("Recommending Words... ");
 		String resultWord = new String();
 		deduceHintsUpdateWords(hints, guessedWord);
-		
+
 		switch (typeOfRun) {
 		case 1:
 			// Case 1: Picking first word in remaining list
 			int wordsetindex = 1;
-			for(String s: wordSet){
-				if(wordsetindex==1){
-					resultWord=s;
+			for (String s : wordSet) {
+				if (wordsetindex == 1) {
+					resultWord = s;
 					break;
 				}
 			}
@@ -75,7 +76,7 @@ public class WordleSolver {
 			resultWord = maxFreqScoreWord();
 			break;
 		}
-		
+
 		if (wordSet.isEmpty()) {
 			System.out.println("I am out of words! What?!?!");
 		}
@@ -114,7 +115,67 @@ public class WordleSolver {
 			}
 		}
 
+		updateWordSetForRepeatingCharacters(guessedWord, hints);
+
 	}
+
+	private static void updateWordSetForRepeatingCharacters(String guessedWord, Hashtable<Integer, String[]> ht) {
+		HashMap<Character, Integer> letterFreq = getLetterFreqInWord(guessedWord);
+
+		for (Character letter : letterFreq.keySet()) {
+			int letterCount = 0;
+			if (letterFreq.get(letter) > 1) {
+				Enumeration<Integer> e = ht.keys();
+				while (e.hasMoreElements()) {
+					int key = e.nextElement();
+					if (ht.get(key)[0].charAt(0) == letter && (ht.get(key)[1] == "PRESENT_AT_RIGHT_POSITION"
+							|| ht.get(key)[1] == "LetterHint.PRESENT_AT_WRONG_POSITION")) {
+						letterCount++;
+					}
+				}
+				if (letterFreq.get(letter) != letterCount) {
+					updateWordSet(letter, letterCount);
+
+				}
+			}
+		}
+
+	}
+
+	private static void updateWordSet(Character letter, int letterCount) {
+
+		// System.out.println("Deducing hint for " + guessedChar + " " + wordSet);
+		Iterator<String> iterator = wordSet.iterator();
+
+		while (iterator.hasNext()) {
+			String word = iterator.next();
+
+			if (getLetterFreqInWord(letter, word)>letterCount){
+				iterator.remove();
+			} 
+		}
+	}
+
+	private static int getLetterFreqInWord(Character letter, String word) {
+		int freq=0;
+		for(int i=0; i<word.length();i++) if(word.charAt(i) == letter) freq++;
+		return freq;
+	}
+
+	private static HashMap<Character, Integer> getLetterFreqInWord(String word) {
+		HashMap<Character, Integer> mp = new HashMap<Character, Integer>();
+
+		for (int i = 0; i < word.length(); i++) {
+			char letter = word.charAt(i);
+			if (mp.containsKey(letter)) {
+				mp.put(letter, mp.get(letter) + 1);
+			} else {
+				mp.put(letter, 1);
+			}
+		}
+		return mp;
+	}
+	
 
 	private static void removeGuessedWord(String guessedWord) {
 		wordSet.remove(guessedWord);
@@ -156,6 +217,7 @@ public class WordleSolver {
 		}
 	}
 
+	
 	public static Integer getWordLength() {
 		return wordLength;
 	}

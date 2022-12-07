@@ -33,8 +33,9 @@ public class WordleSimulator {
 
 		@SuppressWarnings("resource")
 		Scanner scn = new Scanner(System.in);
-		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);		
-		String wordOfTheDay = "torso";
+		System.out.println(ANSI_BOLD + "Simulating Wordle" + ANSI_RESET);
+
+		String wordOfTheDay = "amber"; // Use getWordOfTheDay() for a random word
 		int count = 0;
 
 		WordleSolver wSolver = new WordleSolver(WORD_LENGTH);
