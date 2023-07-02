@@ -10,3 +10,7 @@ We are working on a Wordle Solving algorithm to guess a word in minimum number o
 ### Running the project
 
 You can import the project (Projects from Git option in Eclipse) using the Clone URI option. Once cloned, run the `WordleConnectorBot.java`.
+
+### Entropy Calculation
+
+![Entropy Calculation]([http://url/to/img.png](https://github.com/pkondrakunta/wordle-solver/blob/main/results/entropy_calculated.png)https://github.com/pkondrakunta/wordle-solver/blob/main/results/entropy_calculated.png)
