@@ -13,4 +13,4 @@ You can import the project (Projects from Git option in Eclipse) using the Clone
 
 ### Entropy Calculation
 
-![Entropy Calculation]([http://url/to/img.png](https://github.com/pkondrakunta/wordle-solver/blob/main/results/entropy_calculated.png)https://github.com/pkondrakunta/wordle-solver/blob/main/results/entropy_calculated.png)
+![Entropy Calculation](https://github.com/pkondrakunta/wordle-solver/blob/main/results/entropy_calculated.png)
